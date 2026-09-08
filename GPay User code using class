@@ -1,0 +1,140 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class GPayUser
+{
+private:
+    // Details of User
+    string name;
+    string phoneNumber;
+    string upiId;
+    double balance;
+public:
+     //Constructor
+    GPayUser(string n, string p, string u, double b)
+    {
+        name = n;
+        phoneNumber = p;
+        upiId = u;
+        balance = b;
+
+        cout << "Account created for " << name << endl;
+    }
+    // Destructor
+    ~GPayUser()
+    {
+        cout << "Account closed for " << name << endl;
+    }
+    // Getters
+    string getName()
+    {
+        return name;
+    }
+    string getPhoneNumber()
+    {
+        return phoneNumber;
+    }
+    string getUpiId()
+    {
+        return upiId;
+    }
+    double getBalance()
+    {
+        return balance;
+    }
+    // Setters
+    void setName(string n)
+    {
+        name = n;
+    }
+
+    void setPhoneNumber(string p)
+    {
+        phoneNumber = p;
+    }
+    void setUpiId(string u)
+    {
+        upiId = u;
+    }
+    void setBalance(double b)
+    {
+        balance = b;
+    }
+
+    // printing user details
+    void UserDetails()
+    {
+        cout << "Name       : " << name << endl;
+        cout << "Phone      : " << phoneNumber << endl;
+        cout << "UPI ID     : " << upiId << endl;
+        cout << "Balance    : Rs." << balance << endl;
+    }
+
+    // Add money to the account
+    void addMoney(double amount)
+    {
+        if (amount > 0)
+        {
+            balance = balance + amount;
+            cout << amount << " added to " << name << "'s account." << endl;
+        }
+    }
+
+    // Payment behavior
+    void makePayment(GPayUser &receiver, double amount)
+    {
+        if (amount <= 0)
+        {
+            cout << "Invalid payment amount." << endl;
+            return;
+        }
+
+        if (balance >= amount)
+        {
+            balance = balance - amount;
+            receiver.balance = receiver.balance + amount;
+
+            cout << "\nPayment Successful!" << endl;
+            cout << name << " sent Rs." << amount
+                 << " to " << receiver.name << endl;
+        }
+        else
+        {
+            cout << "\nPayment Failed!" << endl;
+            cout << "Not enough balance in " << name << "'s account." << endl;
+        }
+    }
+};
+
+int main()
+{
+    // Creating 5 GPay users
+    GPayUser user1("Poojitha", "1234567890", "poojitha@upi", 2000);
+    GPayUser user2("Palak", "1234567891", "palak@upi", 3000);
+    GPayUser user3("Aditi", "1234567892", "aditi@upi", 4000);
+    GPayUser user4("Gayathri", "1234567893", "gayathri@upi", 5000);
+    GPayUser user5("Dhatri", "1234567894", "dhatri@upi", 6000);
+
+    // Displaying all users
+    user1.UserDetails();
+    user2.UserDetails();
+    user3.UserDetails();
+    user4.UserDetails();
+    user5.UserDetails();
+
+    // Making a payment from Poojitha to Palak
+    cout << "\n Payment Transaction " << endl;
+
+    user1.makePayment(user2, 1000);
+
+    // Showing updated balances
+    cout << "\n Updated Balances " << endl;
+
+    cout << user1.getName() << " balance: Rs."
+         << user1.getBalance() << endl;
+
+    cout << user2.getName() << " balance: Rs."
+         << user2.getBalance() << endl;
+
+    return 0;
+}
