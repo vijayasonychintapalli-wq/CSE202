@@ -1,0 +1,145 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Enums
+enum Category { ELECTRONICS, CLOTHING, FOOD };
+enum OrderStatus { CREATED, CONFIRMED, CANCELLED, DELIVERED };
+enum PaymentStatus { PENDING, PAID, FAILED };
+enum PaymentMethod { CREDIT_CARD, UPI, CASH };
+
+// Union
+union PaymentInfo {
+    int cardLast4;
+    char upiID[30];
+};
+
+// Product Class
+class Product {
+private:
+    int id, stock;
+    string name;
+    float price;
+    Category category;
+
+public:
+    Product(int i, string n, float p, int s, Category c)
+        : id(i), name(n), price(p), stock(s), category(c) {}
+
+    void displayProduct() {
+        cout << id << " | " << name << " | Rs." << price
+             << " | Stock: " << stock << endl;
+    }
+
+    bool checkAvailability(int qty) {
+        return stock >= qty;
+    }
+
+    void updateStock(int qty) {
+        stock += qty;
+    }
+
+    int getID() { return id; }
+    float getPrice() { return price; }
+};
+
+// Customer Class
+class Customer {
+private:
+    int id;
+    string name, email, phone, address;
+
+public:
+    Customer(int i, string n, string e, string p, string a)
+        : id(i), name(n), email(e), phone(p), address(a) {}
+
+    void display() {
+        cout << id << " | " << name << " | "
+             << email << " | " << phone << endl;
+    }
+
+    void update(string e, string p, string a) {
+        email = e; phone = p; address = a;
+    }
+
+    int getID() { return id; }
+};
+
+// Order Struct
+struct Order {
+    int orderID, customerID;
+    float total;
+    OrderStatus status;
+    PaymentStatus paymentStatus;
+
+    Order(int o, int c, float t)
+        : orderID(o), customerID(c), total(t),
+          status(CREATED), paymentStatus(PENDING) {}
+
+    void display() {
+        cout << "Order: " << orderID
+             << " | Customer: " << customerID
+             << " | Total: Rs." << total << endl;
+    }
+};
+
+int main() {
+    Product p(101, "Laptop", 50000, 5, ELECTRONICS);
+    Customer c(1, "Aditi", "a@gmail.com", "9876543210", "Punjab");
+
+    p.displayProduct();
+    c.display();
+
+    // Create Order
+    int qty = 2;
+
+    // Validation 1: Out of stock
+    if (!p.checkAvailability(qty)) {
+        cout << "Error: Product out of stock!\n";
+        return 0;
+    }
+
+    // Validation 2: Invalid customer ID
+    int customerID = 1;
+    if (customerID != c.getID()) {
+        cout << "Error: Invalid customer ID!\n";
+        return 0;
+    }
+
+    Order o(1001, customerID, p.getPrice() * qty);
+    o.display();
+
+    // Payment
+    PaymentMethod method = UPI;
+    PaymentInfo info;
+    o.paymentStatus = PAID;
+
+    // Validation 3: Failed payment
+    if (o.paymentStatus == FAILED) {
+        cout << "Error: Payment failed!\n";
+    } 
+    else {
+        o.status = CONFIRMED;
+        cout << "Order confirmed.\n";
+    }
+
+    // Validation 4: Cancelling delivered order
+    if (o.status == DELIVERED) {
+        cout << "Error: Cannot cancel delivered order!\n";
+    } 
+    else {
+        o.status = CANCELLED;
+        cout << "Order cancelled.\n";
+    }
+
+    // Validation 5: Payment for cancelled order
+    if (o.status == CANCELLED) {
+        cout << "Error: Cannot make payment for cancelled order!\n";
+    }
+
+    // Validation 6: Invalid product ID
+    int productID = 999;
+    if (productID != p.getID())
+        cout << "Error: Invalid product ID!\n";
+
+    return 0;
+}
